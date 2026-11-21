@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-letra="normal">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#F8F6F1">
+  <meta name="description" content="Aprenda bordado livre um ponto de cada vez.">
+  <title>Bordado Livre</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icone.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icone.svg">
+  <link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+  <div id="app"><main class="entrar"><h1>Bordado Livre</h1><p>Abrindo…</p></main></div>
+
+  <dialog id="opiniao">
+    <form method="dialog">
+      <h2>O que você achou?</h2>
+      <p>Conte o que foi fácil, o que foi difícil ou o que faltou nesta tela.</p>
+      <textarea rows="5" maxlength="2000" aria-label="Sua opinião"></textarea>
+      <div class="par-botoes">
+        <button class="botao secundario" value="cancelar">Fechar</button>
+        <button class="botao" value="enviar">Enviar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

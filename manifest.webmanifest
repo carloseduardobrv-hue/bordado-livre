@@ -1,0 +1,14 @@
+{
+  "name": "Bordado Livre",
+  "short_name": "Bordado Livre",
+  "description": "Aprenda bordado livre um ponto de cada vez.",
+  "lang": "pt-BR",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#F8F6F1",
+  "theme_color": "#F8F6F1",
+  "icons": [
+    { "src": "icone.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
