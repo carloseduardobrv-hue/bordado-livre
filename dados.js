@@ -139,11 +139,12 @@ export const RISCOS = {
 };
 
 // Pontos da área de Treino. Coordenadas num quadro de 320 x 170.
+// video: endereço do vídeo no YouTube (ou só o código). Vazio mostra "em preparação". As lições aceitam o mesmo campo.
 // Cada passo: a = 'sobe' (agulha vem do avesso) ou 'desce' (agulha vai para o avesso).
 // {lado} troca-se por "de baixo" (destras) ou "de cima" (canhotas).
 export const PONTOS = [
   {
-    id: 'alinhavo', nome: 'Alinhavo', outros: 'Também chamado de ponto corrido.',
+    id: 'alinhavo', video: '', nome: 'Alinhavo', outros: 'Também chamado de ponto corrido.',
     para: 'Contornos leves e linhas pontilhadas.', fios: '2 ou 3 fios',
     passos: [
       { a: 'sobe', p: [50, 85], t: 'Suba com a agulha no começo do risco.' },
@@ -157,7 +158,7 @@ export const PONTOS = [
     erros: ['Tecido franzindo: você puxou a linha com força demais. Puxe só até ela encostar no tecido.'],
   },
   {
-    id: 'atras', nome: 'Ponto atrás', outros: 'Em inglês: backstitch.',
+    id: 'atras', video: '', nome: 'Ponto atrás', outros: 'Em inglês: backstitch.',
     para: 'Contornos firmes, letras e nomes.', fios: '2 ou 3 fios',
     passos: [
       { a: 'sobe', p: [100, 85], t: 'Suba um pontinho à frente do começo do risco.' },
@@ -176,7 +177,7 @@ export const PONTOS = [
     ],
   },
   {
-    id: 'haste', nome: 'Ponto haste', outros: 'Em Portugal: ponto pé de flor.',
+    id: 'haste', video: '', nome: 'Ponto haste', outros: 'Em Portugal: ponto pé de flor.',
     para: 'Caules, galhos e letras com curvas.', fios: '2 ou 3 fios',
     passos: [
       { a: 'sobe', p: [50, 85], t: 'Suba no começo do risco.' },
@@ -192,7 +193,7 @@ export const PONTOS = [
     erros: ['Cordão serrilhado na curva: encurte os pontos e deixe a linha frouxa do lado de fora da curva.'],
   },
   {
-    id: 'margarida', nome: 'Ponto margarida', outros: 'É um elo de ponto corrente, sozinho.',
+    id: 'margarida', video: '', nome: 'Ponto margarida', outros: 'É um elo de ponto corrente, sozinho.',
     para: 'Pétalas e folhinhas pequenas.', fios: '3 ou 4 fios',
     passos: [
       { a: 'sobe', p: [160, 130], t: 'Suba na base da pétala.' },

@@ -24,6 +24,22 @@ const ICONES = {
 };
 const icone = (n) => `<svg class="icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONES[n]}</svg>`;
 
+// ---------- Vídeo do YouTube ----------
+// Aceita o endereço completo do vídeo (normal, curto ou Shorts) ou só o código de 11 caracteres.
+function lerYoutube(valor) {
+  if (!valor) return null;
+  const texto = String(valor).trim();
+  const m = texto.match(/(?:youtu\.be\/|[?&]v=|\/shorts\/|\/embed\/)([\w-]{11})/);
+  if (m) return { id: m[1], vertical: texto.includes('/shorts/') };
+  return /^[\w-]{11}$/.test(texto) ? { id: texto, vertical: false } : null;
+}
+function blocoVideo(valor, titulo, mostrarVazio) {
+  const v = lerYoutube(valor);
+  if (!v) return mostrarVazio ? `<div class="video vazio"><p>Vídeo deste ponto em preparação.</p></div>` : '';
+  return `<div class="video ${v.vertical ? 'vertical' : ''}"><iframe src="https://www.youtube-nocookie.com/embed/${v.id}?rel=0&playsinline=1&loop=1&playlist=${v.id}"
+    title="Vídeo: ${esc(titulo)}" loading="lazy" allow="accelerometer; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>`;
+}
+
 // ---------- Regras de níveis ----------
 function statusNivel(n) {
   const inicial = estado.perfil.nivel_inicial;
@@ -217,6 +233,7 @@ function ecraLicao(arg) {
   if (!l) return `<h1>Lição não encontrada</h1><a class="botao" href="#/curso">Voltar ao curso</a>`;
   return `<a class="ligacao voltar" href="#/nivel/${n}">${icone('voltar')} Nível ${n}</a>
     <p class="sobretitulo">Lição ${i + 1} de ${lista.length}</p><h1>${l.titulo}</h1>
+    ${blocoVideo(l.video, l.titulo, false)}
     ${l.figura ? `<div class="figura">${FIGURAS[l.figura]}</div>` : ''}
     <ol class="passos">${l.passos.map((p) => `<li>${p}</li>`).join('')}</ol>
     ${l.ponto ? `<a class="botao secundario" href="#/ponto/${l.ponto}">Abrir o treino do ponto</a>` : ''}
@@ -253,6 +270,8 @@ function ecraPonto(arg) {
   const texto = s.t.replaceAll('{lado}', ui.canhota ? 'de cima' : 'de baixo');
   return `<a class="ligacao voltar" href="#/treino">${icone('voltar')} Treino</a>
     <h1>${p.nome}</h1><p class="nota">${p.outros} Use ${p.fios}.</p>
+    ${blocoVideo(p.video, p.nome, true)}
+    <h2>Passo a passo</h2>
     <div class="diagrama">${desenharPonto(p, ui.passo, { canhota: ui.canhota })}</div>
     <p class="legenda"><span class="frente"></span> pela frente do tecido <span class="avesso"></span> pelo avesso</p>
     <div class="cartao passo-atual" aria-live="polite">
