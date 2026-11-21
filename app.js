@@ -24,6 +24,56 @@ const ICONES = {
 };
 const icone = (n) => `<svg class="icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONES[n]}</svg>`;
 
+// ---------- Voz que lê o passo a passo ----------
+// Usa a voz do próprio aparelho (grátis, sem ficheiros de áudio) e por isso serve para qualquer texto,
+// incluindo projetos feitos pela pessoa. A qualidade da voz depende do telemóvel.
+const VOZ_OK = 'speechSynthesis' in window && 'SpeechSynthesisUtterance' in window;
+let narracao = 0; // cada narração tem um número; mudar de ecrã ou parar invalida a que estava a correr
+
+function vozPt() {
+  const vozes = speechSynthesis.getVoices();
+  return vozes.find((v) => v.lang === 'pt-BR') || vozes.find((v) => v.lang?.toLowerCase().startsWith('pt')) || null;
+}
+function falar(texto) {
+  return new Promise((resolver) => {
+    const fala = new SpeechSynthesisUtterance(texto);
+    fala.lang = 'pt-BR'; fala.rate = 0.9;
+    const voz = vozPt();
+    if (voz) fala.voice = voz;
+    // Se o aparelho nunca avisar que acabou, o passo seguinte não pode ficar à espera para sempre.
+    const limite = setTimeout(resolver, texto.length * 110 + 4000);
+    fala.onend = fala.onerror = () => { clearTimeout(limite); resolver(); };
+    speechSynthesis.speak(fala);
+  });
+}
+function pararVoz() {
+  narracao++;
+  if (VOZ_OK) speechSynthesis.cancel();
+}
+function textoDoPasso(ponto) {
+  const s = ponto.passos[ui.passo];
+  return `Passo ${ui.passo + 1}. ` + s.t.replaceAll('{lado}', ui.canhota ? 'de cima' : 'de baixo');
+}
+async function tocarPonto() {
+  const ponto = PONTOS.find((x) => x.id === lerRota().arg);
+  if (!ponto) return;
+  pararVoz();
+  const minha = narracao;
+  const total = ponto.passos.length;
+  const inicio = ui.passo >= total - 1 ? 0 : ui.passo;
+  ui.tocando = true;
+  evento('voz_ponto', { ponto: ponto.id });
+  for (let i = inicio; i < total; i++) {
+    if (minha !== narracao) return;
+    ui.passo = i; desenhar();
+    await falar(textoDoPasso(ponto));
+    if (minha !== narracao) return;
+    await new Promise((r) => setTimeout(r, 700));
+  }
+  if (minha !== narracao) return;
+  ui.tocando = false; desenhar();
+}
+
 // ---------- Vídeo do YouTube ----------
 // Aceita o endereço completo do vídeo (normal, curto ou Shorts) ou só o código de 11 caracteres.
 function lerYoutube(valor) {
@@ -61,7 +111,7 @@ const ir = (destino) => { location.hash = '#/' + destino; };
 function desenhar() {
   const r = lerRota();
   const chave = r.nome + '/' + r.arg;
-  if (chave !== ultimaRota) { ui = {}; ultimaRota = chave; evento('ecra', { rota: chave }); window.scrollTo(0, 0); }
+  if (chave !== ultimaRota) { pararVoz(); ui = {}; ultimaRota = chave; evento('ecra', { rota: chave }); window.scrollTo(0, 0); }
   // No questionário, a letra escolhida mostra-se logo, antes de ser guardada.
   document.documentElement.dataset.letra = ui.ob?.letra || estado.perfil?.tamanho_letra || 'normal';
 
@@ -282,6 +332,10 @@ function ecraPonto(arg) {
       <button class="botao secundario" data-acao="passo-menos" ${ui.passo === 0 ? 'disabled' : ''}>Passo anterior</button>
       ${ui.passo < total - 1 ? `<button class="botao" data-acao="passo-mais">Próximo passo</button>` : `<button class="botao" data-acao="passo-zero">Ver de novo</button>`}
     </div>
+    ${VOZ_OK ? `<div class="par-botoes">
+      <button class="botao secundario" data-acao="ouvir">Ouvir este passo</button>
+      <button class="botao secundario" data-acao="${ui.tocando ? 'parar' : 'tocar-tudo'}">${ui.tocando ? 'Parar a voz' : 'Tocar o ponto todo'}</button>
+    </div>` : ''}
     <button class="botao texto" data-acao="trocar-mao">${ui.canhota ? 'Ver para a mão direita' : 'Ver para a mão esquerda'}</button>
     <div class="dica"><strong>Dica</strong><p>${p.dica}</p></div>
     <div class="cartao"><h2>Se algo der errado</h2><ul class="passos">${p.erros.map((e) => `<li>${e}</li>`).join('')}</ul></div>`;
@@ -406,9 +460,16 @@ const ACOES = {
     if (confirm('Tudo bem. Você pode enviar a foto depois, quando conseguir. Quer concluir o nível agora?')) terminarNivel(Number(b.dataset.nivel), 'sem_foto');
   },
   'ja-sei': (b) => { if (confirm('Pular este nível e abrir o próximo?')) terminarNivel(Number(b.dataset.nivel), 'ja_sei'); },
-  'passo-mais': () => { ui.passo++; desenhar(); },
-  'passo-menos': () => { ui.passo--; desenhar(); },
+  'passo-mais': () => { pararVoz(); ui.tocando = false; ui.passo++; desenhar(); },
+  'passo-menos': () => { pararVoz(); ui.tocando = false; ui.passo--; desenhar(); },
   'passo-zero': () => { ui.passo = 0; desenhar(); },
+  ouvir: () => {
+    const ponto = PONTOS.find((x) => x.id === lerRota().arg);
+    pararVoz(); ui.tocando = false; desenhar();
+    if (ponto) falar(textoDoPasso(ponto));
+  },
+  'tocar-tudo': () => { tocarPonto(); },
+  parar: () => { pararVoz(); ui.tocando = false; desenhar(); },
   'trocar-mao': () => { ui.canhota = !ui.canhota; desenhar(); },
   risco: (b) => { ui.risco = b.dataset.id; desenhar(); },
   acender: acenderMesa,
