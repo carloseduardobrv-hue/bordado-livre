@@ -1,7 +1,7 @@
 /* Visual artesanal: cores de linha, textura de linho e pesponto nos botões. Só HTML e CSS, sem imagens. */
 :root {
   --linho: #F6F1E7; --papel: #FFFCF6; --areia: #EDE4D3; --borda: #D9CDB8;
-  --texto: #3A2E26; --suave: #6B5D52;
+  --texto: #4A372B; --suave: #6B5D52;
   --terracota: #A8481F; --terracota-escura: #7E3415; --verde: #3F6B4A; --azul: #2F4F7A; --ocre: #D9A441;
   --raio: 16px;
   --titulos: "Fraunces", Georgia, "Times New Roman", serif;

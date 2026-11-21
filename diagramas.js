@@ -53,8 +53,8 @@ export function desenharPonto(ponto, ateQue, { canhota = false, cor = '#163870' 
     vistos.add(chave);
     const [x, y] = espelhar(s.p, canhota);
     const feito = i <= ateQue;
-    furos += `<circle cx="${x}" cy="${y}" r="3.5" fill="${feito ? '#1E221F' : '#B9B4A8'}"/>`
-      + `<text x="${x}" y="${y - 14}" text-anchor="middle" font-size="15" font-weight="700" fill="${feito ? '#1E221F' : '#8C8A82'}">${numeros.get(chave)}</text>`;
+    furos += `<circle cx="${x}" cy="${y}" r="3.5" fill="${feito ? '#4A372B' : '#B9B4A8'}"/>`
+      + `<text x="${x}" y="${y - 14}" text-anchor="middle" font-size="15" font-weight="700" fill="${feito ? '#4A372B' : '#8C8A82'}">${numeros.get(chave)}</text>`;
   });
 
   const [ax, ay] = espelhar(passos[ateQue].p, canhota);
@@ -91,6 +91,6 @@ export const FIGURAS = {
       <line x1="30" y1="40" x2="290" y2="40" stroke="#163870"/><line x1="30" y1="54" x2="290" y2="54" stroke="#163870"/><line x1="30" y1="68" x2="290" y2="68" stroke="#163870"/>
       <line x1="30" y1="92" x2="290" y2="92" stroke="#C9C5BA"/><line x1="30" y1="106" x2="290" y2="106" stroke="#C9C5BA"/><line x1="30" y1="120" x2="290" y2="120" stroke="#C9C5BA"/>
     </g>
-    <text x="160" y="24" text-anchor="middle" font-size="14" fill="#1E221F">3 fios para bordar</text>
+    <text x="160" y="24" text-anchor="middle" font-size="14" fill="#4A372B">3 fios para bordar</text>
   </svg>`,
 };
