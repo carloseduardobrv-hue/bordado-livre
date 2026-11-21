@@ -12,7 +12,7 @@ let ultimaRota = '';
 
 const ICONES = {
   inicio: '<path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
-  curso: '<path d="M4 5h7a3 3 0 0 1 3 3v12a2 2 0 0 0-2-2H4z"/><path d="M20 5h-3a3 3 0 0 0-3 3"/><path d="M14 20a2 2 0 0 1 2-2h4V5"/>',
+  guia: '<path d="M4 5h7a3 3 0 0 1 3 3v12a2 2 0 0 0-2-2H4z"/><path d="M20 5h-3a3 3 0 0 0-3 3"/><path d="M14 20a2 2 0 0 1 2-2h4V5"/>',
   treino: '<circle cx="12" cy="13" r="8"/><path d="M10 3h4v2h-4z"/><path d="M8 15c1.5-2 3.5-3 6-2"/>',
   projeto: '<rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="4"/><path d="M8 6l1.5-3h5L16 6"/>',
   conta: '<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>',
@@ -68,7 +68,7 @@ function desenhar() {
   if (!estado.utilizador) { raiz.innerHTML = ecraEntrar(); return; }
   if (!estado.perfil.onboarding_feito || r.nome === 'boas-vindas') { raiz.innerHTML = ecraBoasVindas(); return; }
 
-  const ecras = { inicio: ecraInicio, curso: ecraCurso, nivel: ecraNivel, licao: ecraLicao, festa: ecraFesta,
+  const ecras = { inicio: ecraInicio, guia: ecraGuia, nivel: ecraNivel, licao: ecraLicao, festa: ecraFesta,
     treino: ecraTreino, ponto: ecraPonto, projeto: ecraProjeto, mesa: ecraMesa, conta: ecraConta };
   const ecra = ecras[r.nome] || ecraInicio;
   const semMoldura = r.nome === 'festa';
@@ -77,8 +77,8 @@ function desenhar() {
 }
 
 function moldura(rota, conteudo) {
-  const abas = [['inicio', 'Início'], ['curso', 'Curso'], ['treino', 'Treino'], ['projeto', 'Meu projeto']];
-  const ativa = { nivel: 'curso', licao: 'curso', ponto: 'treino', mesa: 'projeto' }[rota] || rota;
+  const abas = [['inicio', 'Início'], ['guia', 'Guia'], ['treino', 'Treino'], ['projeto', 'Meu projeto']];
+  const ativa = { nivel: 'guia', licao: 'guia', ponto: 'treino', mesa: 'projeto' }[rota] || rota;
   return `
     <header class="topo">
       <a class="marca" href="#/inicio">Bordado Livre</a>
@@ -166,7 +166,7 @@ function ecraInicio() {
     <section class="cartao"><h2>Seu caminho</h2>
       <p>${feitos} de ${NIVEIS.length} níveis concluídos</p>
       <div class="barra"><span style="width:${Math.round((feitos / NIVEIS.length) * 100)}%"></span></div>
-      <a class="ligacao" href="#/curso">Ver todos os níveis ${icone('seta')}</a>
+      <a class="ligacao" href="#/guia">Ver todos os níveis ${icone('seta')}</a>
     </section>
     <section class="cartao"><h2>Meus bordados</h2><div id="galeria" class="galeria"><p class="nota">As fotos dos seus trabalhos aparecem aqui.</p></div></section>`;
 }
@@ -182,10 +182,10 @@ async function preencherGaleria() {
   } catch (e) { console.error(e); }
 }
 
-// ---------- Curso ----------
-function ecraCurso() {
+// ---------- Guia ----------
+function ecraGuia() {
   const textos = { concluido: 'Concluído', dispensado: 'Você já sabe', aberto: 'Aberto', fechado: 'Fechado' };
-  return `<h1>Curso</h1><p>Sete níveis, um de cada vez. Termine um para abrir o seguinte.</p>
+  return `<h1>Guia</h1><p>Sete níveis, um de cada vez. Termine um para abrir o seguinte.</p>
     <ol class="caminho">${NIVEIS.map((x) => {
       const s = statusNivel(x.n);
       const dentro = `<span class="numero" style="--cor:${x.cor}">${s === 'concluido' ? icone('certo') : s === 'fechado' ? icone('cadeado') : x.n}</span>
@@ -199,8 +199,8 @@ function ecraCurso() {
 function ecraNivel(arg) {
   const n = Number(arg) || 1;
   const nv = NIVEIS[n - 1];
-  if (!nv || statusNivel(n) === 'fechado') return `<h1>Nível fechado</h1><p>Termine o nível anterior para abrir este.</p><a class="botao" href="#/curso">Voltar ao curso</a>`;
-  const voltar = `<a class="ligacao voltar" href="#/curso">${icone('voltar')} Curso</a>`;
+  if (!nv || statusNivel(n) === 'fechado') return `<h1>Nível fechado</h1><p>Termine o nível anterior para abrir este.</p><a class="botao" href="#/guia">Voltar ao guia</a>`;
+  const voltar = `<a class="ligacao voltar" href="#/guia">${icone('voltar')} Guia</a>`;
   if (!temConteudo(n)) {
     return `${voltar}<p class="sobretitulo">Nível ${n}</p><h1>${nv.titulo}</h1><p>${nv.resumo}</p>
       <div class="cartao"><p>Este nível ainda está sendo preparado. Nesta versão de teste, só o nível 1 está completo.</p>
@@ -230,7 +230,7 @@ function ecraLicao(arg) {
   const lista = LICOES[n] || [];
   const i = lista.findIndex((l) => l.id === arg);
   const l = lista[i];
-  if (!l) return `<h1>Lição não encontrada</h1><a class="botao" href="#/curso">Voltar ao curso</a>`;
+  if (!l) return `<h1>Lição não encontrada</h1><a class="botao" href="#/guia">Voltar ao guia</a>`;
   return `<a class="ligacao voltar" href="#/nivel/${n}">${icone('voltar')} Nível ${n}</a>
     <p class="sobretitulo">Lição ${i + 1} de ${lista.length}</p><h1>${l.titulo}</h1>
     ${blocoVideo(l.video, l.titulo, false)}
@@ -249,7 +249,7 @@ function ecraFesta(arg) {
     <div class="confete" aria-hidden="true">${Array.from({ length: 24 }, (_, i) => `<i style="left:${(i * 41) % 100}%;background:${cores[i % 4]};animation-delay:${(i % 8) * 0.12}s"></i>`).join('')}</div>
     <h1>Parabéns!</h1><p class="lema">Você concluiu o nível ${n}.</p>
     ${seguinte ? `<div class="cartao destaque"><p class="rotulo">Novo nível aberto</p><p class="sobretitulo">Nível ${seguinte.n}</p><h2>${seguinte.titulo}</h2><p>${seguinte.resumo}</p></div>` : ''}
-    <a class="botao grande" href="#/curso">Ver o meu caminho</a>
+    <a class="botao grande" href="#/guia">Ver o meu caminho</a>
   </main>`;
 }
 
@@ -357,7 +357,7 @@ function ecraConta() {
     <h2>Mão da agulha</h2>${opcoes('mao', [['destra', 'Direita'], ['canhota', 'Esquerda']], p.mao)}
     <h2>Meu nível</h2><p>Você começou no nível ${p.nivel_inicial}.</p>
     <a class="botao secundario" href="#/boas-vindas">Refazer o questionário</a>
-    <button class="botao texto" data-acao="reiniciar">Recomeçar o curso do zero</button>
+    <button class="botao texto" data-acao="reiniciar">Recomeçar o guia do zero</button>
     <hr><button class="botao secundario" data-acao="sair">Sair</button>
     ${estado.convidado ? '<p class="nota">Modo convidado: nada é guardado na base de dados.</p>' : ''}`;
 }
@@ -413,7 +413,7 @@ const ACOES = {
   risco: (b) => { ui.risco = b.dataset.id; desenhar(); },
   acender: acenderMesa,
   pref: (b) => tentar(async () => { await guardarPerfil({ [b.dataset.grupo]: b.dataset.id }); desenhar(); }),
-  reiniciar: () => { if (confirm('Isso apaga todo o seu progresso no curso. Quer mesmo recomeçar?')) tentar(async () => { await reiniciarProgresso(); avisar('Curso recomeçado.'); desenhar(); }); },
+  reiniciar: () => { if (confirm('Isso apaga todo o seu progresso no guia. Quer mesmo recomeçar?')) tentar(async () => { await reiniciarProgresso(); avisar('Guia recomeçado.'); desenhar(); }); },
   sair: () => tentar(async () => { await sair(); location.hash = ''; desenhar(); }),
 };
 
